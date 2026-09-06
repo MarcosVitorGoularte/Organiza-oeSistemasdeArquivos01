@@ -14,6 +14,14 @@ int main(){
     for(Aluno& al : alunosLidos){
         al.imprimir();
     }
+    cout << "\nTeste de Leitura por RRN e Tamanho do Arquivo" << endl;
+    Aluno teste;
+    int rrn;
+    cin >> rrn;
+    GerenciadorArquivo::lerPorRRN(arquivoBinario, rrn, teste);
+    teste.imprimir();
+    long long tam = GerenciadorArquivo::obterTamanhoArquivo(arquivoBinario);
+    cout << tam << " Bytes" << endl;
 
     return 0;
 }

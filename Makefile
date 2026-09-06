@@ -5,6 +5,9 @@ TARGET = gerenciador_alunos
 SRCS = main.cpp Aluno.cpp GerenciadorArquivo.cpp Benchmark.cpp
 OBJS = $(SRCS:.cpp=.o)
 
+PYTHON = python3
+GERADOR = arquivo.py
+
 .PHONY: all run clean
 
 all: $(TARGET)
@@ -21,7 +24,8 @@ GerenciadorArquivo.cpp: GerenciadorArquivo.hpp Aluno.hpp
 Benchmark.cpp: Benchmark.hpp GerenciadorArquivo.hpp Aluno.hpp
 
 run: all
+	$(PYTHON) $(GERADOR) --cenarios
 	./$(TARGET)
 
 clean:
-	rm -f *.o *.bin $(TARGET)
+	rm -f *.o *.bin *.csv $(TARGET)

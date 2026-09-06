@@ -5,8 +5,9 @@
 #include <sstream>
 #include <iostream>
 #include <cstring>
+#include <filesystem>
 
-std::vector<Aluno> GerenciadorArquivo::lerCSV(std::string caminho){
+std::vector<Aluno> GerenciadorArquivo::lerCSV(const std::string& caminho){
     std::vector<Aluno> alunos;
 
     std::ifstream arquivo(caminho);
@@ -48,7 +49,7 @@ std::vector<Aluno> GerenciadorArquivo::lerCSV(std::string caminho){
 
 }
 
-bool GerenciadorArquivo::salvarFixo(std::string arq, std::vector<Aluno> al){
+bool GerenciadorArquivo::salvarFixo(const std::string& arq, std::vector<Aluno> al){
      
     std::fstream arquivo(arq, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
     if(!arquivo.is_open()){
@@ -68,13 +69,13 @@ bool GerenciadorArquivo::salvarFixo(std::string arq, std::vector<Aluno> al){
 
 }
 
-// bool GerenciadorArquivo::salvarDelimitado(std::string arq, std::vector<Aluno> al){
+// bool GerenciadorArquivo::salvarDelimitado(const std::string& arq, std::vector<Aluno> al){
 
 // }
-// bool GerenciadorArquivo::salvarIndicador(std::string arq, std::vector<Aluno> al){
+// bool GerenciadorArquivo::salvarIndicador(const std::string& arq, std::vector<Aluno> al){
 
 // }
-std::vector<Aluno> GerenciadorArquivo::lerFixo(std::string arq){
+std::vector<Aluno> GerenciadorArquivo::lerFixo(const std::string& arq){
     
     std::vector<Aluno> alunos;
     std::ifstream arquivo(arq);
@@ -95,15 +96,54 @@ std::vector<Aluno> GerenciadorArquivo::lerFixo(std::string arq){
 
 
 }
-// std::vector<Aluno> GerenciadorArquivo::lerDelimitado(std::string arq){
+// std::vector<Aluno> GerenciadorArquivo::lerDelimitado(const std::string& arq){
 
 // }
-// std::vector<Aluno> GerenciadorArquivo::lerIndicador(std::string arq){
+// std::vector<Aluno> GerenciadorArquivo::lerIndicador(const std::string& arq){
 
 // }
-// bool GerenciadorArquivo::lerPorRRN(std::string arq, int rrn, Aluno& out){
+bool GerenciadorArquivo::lerPorRRN(const std::string& arq, int rrn, Aluno& out){
+    if(rrn < 0){
+        std::cout << "RRN nao pode ser negativo!" << std::endl;
+        return false;
+    }
 
-// }
-// long long GerenciadorArquivo::obterTamanhoArquivo(std::string arq){
+    std::ifstream arquivo(arq);
+    if(!arquivo.is_open()){
+        std::cout << "Erro ao abrir o arquivo: " << arq << std::endl;
+        return false;       
+    }
 
-// }
+    int offset = rrn * Aluno::TAMANHO_REGISTRO;
+    arquivo.seekg(offset, std::ios::beg);
+
+    if(!arquivo.good()){
+        std::cout << "Erro ao tentar encontrar registro!" <<std::endl;
+        arquivo.close();
+        return false;
+    }
+
+    char buffer[Aluno::TAMANHO_REGISTRO];
+    arquivo.read(buffer, Aluno::TAMANHO_REGISTRO);
+
+    if(arquivo.gcount() != Aluno::TAMANHO_REGISTRO){
+        std::cout << "Erro ao ler registro do arquivo! Ultrapassa os RRNs salvos!" << std::endl;
+        return false;       
+    }
+
+    out.unpackFixo(buffer);
+
+    arquivo.close();
+    return true;
+
+}
+long long GerenciadorArquivo::obterTamanhoArquivo(const std::string& arq){
+    
+    std::filesystem::path caminho(arq);
+    long long tamanho = 0;
+    if(std::filesystem::exists(caminho)){
+        tamanho = std::filesystem::file_size(caminho);
+        return tamanho;
+    }
+    return tamanho;
+}
