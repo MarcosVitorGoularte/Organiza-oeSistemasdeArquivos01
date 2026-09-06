@@ -1,0 +1,13 @@
+# Isso e o que vai ignorar quando manda para o github
+*.o
+*.obj
+*.exe
+*.out
+build/
+bin/
+Debug/
+Release/
+.vscode/
+*.bin
+*.tmp
+*.csv
