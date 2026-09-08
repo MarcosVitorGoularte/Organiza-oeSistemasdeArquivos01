@@ -3,6 +3,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <iomanip>
+#include <sstream>
 
 Aluno::Aluno()
 {
@@ -154,9 +155,14 @@ int Aluno::packFixo(char *buffer)
     return pos;
 }
 
-// std::string Aluno::packDelimitado()
-// {
-// }
+std::string Aluno::packDelimitado()
+{
+    std::stringstream stri;
+    stri << matricula << '#' << nome.data() << '#' << idade << '#' <<
+    curso.data() << '#' << cidade.data() << '#' << uf.data() << '#' << cra << '|';
+    std::string buffer = stri.str();
+    return buffer;
+}
 
 // int Aluno::packIndicador(char *buffer)
 // {
@@ -189,9 +195,28 @@ void Aluno::unpackFixo(const char *buffer)
 
 }
 
-// void Aluno::unpackDelimitado(const std::string &buffer)
-// {
-// }
+void Aluno::unpackDelimitado(const std::string &buffer)
+{
+    std::stringstream stream(buffer);
+    std::string campo;
+    if(std::getline(stream, campo, '#')){
+        matricula = std::stoi(campo);
+    }
+
+    std::getline(stream, nome, '#');
+
+    if(std::getline(stream, campo, '#')){
+        idade = std::stoi(campo);
+    }
+
+    std::getline(stream, curso, '#');
+    std::getline(stream, cidade, '#');
+    std::getline(stream, uf, '#');
+
+    if(std::getline(stream, campo)){
+        cra = std::stof(campo);
+    }
+}
 // void Aluno::unpackIndicador(const char *buffer)
 // {
 // }

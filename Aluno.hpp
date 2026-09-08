@@ -44,10 +44,10 @@ public:
     void setCra(float cra);
 
     int packFixo(char* buffer);
-    // std::string packDelimitado();
+    std::string packDelimitado();
     // int packIndicador(char* buffer);
     void unpackFixo(const char* buffer);
-    // void unpackDelimitado(const std::string& buffer);
+    void unpackDelimitado(const std::string& buffer);
     // void unpackIndicador(const char* buffer);
     // int getBytesUteis();
     void imprimir();

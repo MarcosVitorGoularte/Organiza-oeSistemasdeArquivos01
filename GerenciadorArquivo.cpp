@@ -73,12 +73,25 @@ bool GerenciadorArquivo::salvarFixo(const std::string& arq, std::vector<Aluno> a
 
 }
 
-// bool GerenciadorArquivo::salvarDelimitado(const std::string& arq, std::vector<Aluno> al){
+bool GerenciadorArquivo::salvarDelimitado(const std::string& arq, std::vector<Aluno> al){
+    std::fstream arquivo(arq, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
+    if(!arquivo.is_open()){
+        std::cout << "Erro ao abrir o arquivo!" << std::endl;
+        return false;
+    }
+    for(Aluno& aluno : al){
+        std::string buffer = aluno.packDelimitado();
+        arquivo.write(reinterpret_cast<char*>(buffer.data()), buffer.size());
+    }
+    bool sucesso = !arquivo.fail();
+    arquivo.close();
+    return sucesso;
+}
 
-// }
 // bool GerenciadorArquivo::salvarIndicador(const std::string& arq, std::vector<Aluno> al){
 
 // }
+
 std::vector<Aluno> GerenciadorArquivo::lerFixo(const std::string& arq){
     
     std::vector<Aluno> alunos;
@@ -100,9 +113,22 @@ std::vector<Aluno> GerenciadorArquivo::lerFixo(const std::string& arq){
 
 
 }
-// std::vector<Aluno> GerenciadorArquivo::lerDelimitado(const std::string& arq){
-
-// }
+std::vector<Aluno> GerenciadorArquivo::lerDelimitado(const std::string& arq){
+    std::vector<Aluno> alunos;
+    std::ifstream arquivo(arq, std::ios::binary);
+    if(!arquivo.is_open()){
+        std::cout << "Erro ao abrir o arquivo: " << arq << std::endl;
+        return alunos;
+    }
+    std::string buffer;
+    while(std::getline(arquivo, buffer, '|')){
+        Aluno aluno;
+        aluno.unpackDelimitado(buffer);
+        alunos.push_back(aluno);
+    }
+    arquivo.close();
+    return alunos;
+}
 // std::vector<Aluno> GerenciadorArquivo::lerIndicador(const std::string& arq){
 
 // }

@@ -6,20 +6,15 @@
 using namespace std;
 
 int main(){
-    string arquivoBinario = "alunos_fixo.bin";
+    string arquivoBinario = "alunos_delimitado.bin";
     string arquivoCSV = "alunos_1k.csv";
     vector<Aluno> alunos = GerenciadorArquivo::lerCSV(arquivoCSV);
-    GerenciadorArquivo::salvarFixo(arquivoBinario, alunos);
-    vector<Aluno> alunosLidos = GerenciadorArquivo::lerFixo(arquivoBinario);
+    GerenciadorArquivo::salvarDelimitado(arquivoBinario, alunos);
+    vector<Aluno> alunosLidos = GerenciadorArquivo::lerDelimitado(arquivoBinario);
     for(Aluno& al : alunosLidos){
         al.imprimir();
     }
-    cout << "\nTeste de Leitura por RRN e Tamanho do Arquivo" << endl;
-    Aluno teste;
-    int rrn;
-    cin >> rrn;
-    GerenciadorArquivo::lerPorRRN(arquivoBinario, rrn, teste);
-    teste.imprimir();
+    cout << "Tamanho do vetor de alunos lidos: " << alunosLidos.size() << endl;
     long long tam = GerenciadorArquivo::obterTamanhoArquivo(arquivoBinario);
     cout << tam << " Bytes" << endl;
 
