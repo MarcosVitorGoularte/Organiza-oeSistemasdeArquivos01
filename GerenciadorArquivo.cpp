@@ -18,11 +18,15 @@ std::vector<Aluno> GerenciadorArquivo::lerCSV(const std::string& caminho){
     }
 
     std::string linha;
-
-    // Esse aqui é para saltar o cabecalho, mexe nao
     std::getline(arquivo, linha);
+    if(linha.back() == '\r'){
+        linha.pop_back();
+    }
 
     while(std::getline(arquivo, linha)){
+        if(linha.back() == '\r'){
+            linha.pop_back();
+        }
         std::vector<std::string> campos;
         std::string campoAtual;
         std::stringstream ss(linha);
@@ -78,7 +82,7 @@ bool GerenciadorArquivo::salvarFixo(const std::string& arq, std::vector<Aluno> a
 std::vector<Aluno> GerenciadorArquivo::lerFixo(const std::string& arq){
     
     std::vector<Aluno> alunos;
-    std::ifstream arquivo(arq);
+    std::ifstream arquivo(arq , std::ios::binary);
     
     if(!arquivo.is_open()){
         std::cout << "Erro ao abrir o arquivo: " << arq << std::endl;
@@ -108,7 +112,7 @@ bool GerenciadorArquivo::lerPorRRN(const std::string& arq, int rrn, Aluno& out){
         return false;
     }
 
-    std::ifstream arquivo(arq);
+    std::ifstream arquivo(arq, std::ios::binary);
     if(!arquivo.is_open()){
         std::cout << "Erro ao abrir o arquivo: " << arq << std::endl;
         return false;       

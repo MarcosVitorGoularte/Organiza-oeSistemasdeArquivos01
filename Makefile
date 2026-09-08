@@ -1,12 +1,20 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -pedantic-errors -std=c++17 -O2
-TARGET = gerenciador_alunos
 
 SRCS = main.cpp Aluno.cpp GerenciadorArquivo.cpp Benchmark.cpp
 OBJS = $(SRCS:.cpp=.o)
 
-PYTHON = python3
 GERADOR = arquivo.py
+
+ifeq ($(OS),Windows_NT)
+    TARGET = gerenciador_alunos.exe
+    PYTHON = python
+    RM = del /Q
+else
+    TARGET = gerenciador_alunos
+    PYTHON = python3
+    RM = rm -f
+endif
 
 .PHONY: all run clean
 
@@ -28,4 +36,4 @@ run: all
 	./$(TARGET)
 
 clean:
-	rm -f *.o *.bin *.csv $(TARGET)
+	-$(RM) *.o *.bin *.csv $(TARGET)

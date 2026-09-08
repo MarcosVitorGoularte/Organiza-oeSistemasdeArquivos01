@@ -169,19 +169,19 @@ void Aluno::unpackFixo(const char *buffer)
     std::memcpy(&matricula, buffer, sizeof(matricula));
     pos += sizeof(matricula);
 
-    nome = std::string(buffer + pos, TAMANHO_NOME);
+    nome = std::string(buffer + pos);
     pos += TAMANHO_NOME;
 
     std::memcpy(&idade, buffer + pos, sizeof(idade));
     pos += sizeof(idade);
 
-    curso = std::string(buffer + pos, TAMANHO_CURSO);
+    curso = std::string(buffer + pos);
     pos += TAMANHO_CURSO;
 
-    cidade = std::string(buffer + pos, TAMANHO_CIDADE);
+    cidade = std::string(buffer + pos);
     pos += TAMANHO_CIDADE;
 
-    uf = std::string(buffer + pos, TAMANHO_UF);
+    uf = std::string(buffer + pos);
     pos += TAMANHO_UF;
 
     std::memcpy(&cra, buffer + pos, sizeof(cra));
@@ -201,10 +201,10 @@ void Aluno::unpackFixo(const char *buffer)
 
 void Aluno::imprimir()
 {
-    std::cout << "Matricula: " << std::setw(10) << getMatricula() <<
-    " | Nome: " << std::setw(40) << getNome() <<
-    " | Idade: " << std::setw(3) << getIdade() <<
-    " | Curso: " << std::setw(35) << getCurso() <<
+    std::cout << "Matricula: " << std::right << std::setw(10) << getMatricula() <<
+    " | Nome: " << std::left << std::setw(40) << getNome() <<
+    " | Idade: " << std::right << std::setw(3) << getIdade() <<
+    " | Curso: " << std::left << std::setw(35) << getCurso() <<
     " | Cidade: " << std::setw(30) << getCidade() <<
     " | UF: " << std::setw(3) << getUF() <<
     " | CRA: " << std::fixed << std::setprecision(2) << getCra() << std::endl;
