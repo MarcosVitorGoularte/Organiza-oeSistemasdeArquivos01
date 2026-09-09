@@ -10,47 +10,51 @@ int main(){
     
     //Teste do Fixo
     
-    /*string arquivoBinario = "alunos_fixo.bin";
-    string arquivoCSV = "alunos_1k.csv";
-    vector<Aluno> alunos = GerenciadorArquivo::lerCSV(arquivoCSV);
-    GerenciadorArquivo::salvarFixo(arquivoBinario, alunos);
-    vector<Aluno> alunosLidos = GerenciadorArquivo::lerFixo(arquivoBinario);
-    cout << "Tamanho do vetor de alunos lidos: " << alunosLidos.size() << endl;
-    for(Aluno& a : alunosLidos){
-        a.imprimir();
-    }*/
+    // string arquivoBinario = "alunos_fixo.bin";
+    // string arquivoCSV = "alunos_1k.csv";
+    // vector<Aluno> alunos = GerenciadorArquivo::lerCSV(arquivoCSV);
+    // GerenciadorArquivo::salvarFixo(arquivoBinario, alunos);
+    // vector<Aluno> alunosLidos = GerenciadorArquivo::lerFixo(arquivoBinario);
+    // int tamUtil = 0;
+    // for(Aluno& a : alunosLidos){
+    //     a.imprimir();
+    //     tamUtil += a.getBytesUteis();
+    // }
+    // cout << "Tamanho do vetor de alunos lidos: " << alunosLidos.size() << endl;
+    // long long tam = GerenciadorArquivo::obterTamanhoArquivo(arquivoBinario);
+    // cout << "Tamanho Total: " << tam << " Bytes" << "\nTamanho Util: " << tamUtil << " Bytes" << endl;
 
     //Teste do Delimitado
 
-    /*string arquivoBinario = "alunos_delimitado.bin";
-    string arquivoCSV = "alunos_1k.csv";
-    vector<Aluno> alunos = GerenciadorArquivo::lerCSV(arquivoCSV);
-    GerenciadorArquivo::salvarDelimitado(arquivoBinario, alunos);
-    vector<Aluno> alunosLidos = GerenciadorArquivo::lerDelimitado(arquivoBinario);
-    cout << "Tamanho do vetor de alunos lidos: " << alunosLidos.size() << endl;
-    for(Aluno& a : alunosLidos){
-        a.imprimir();
-    }*/
+    // string arquivoBinario = "alunos_delimitado.bin";
+    // string arquivoCSV = "alunos_1k.csv";
+    // vector<Aluno> alunos = GerenciadorArquivo::lerCSV(arquivoCSV);
+    // GerenciadorArquivo::salvarDelimitado(arquivoBinario, alunos);
+    // vector<Aluno> alunosLidos = GerenciadorArquivo::lerDelimitado(arquivoBinario);
+    // int tamUtil = 0;
+    // for(Aluno& a : alunosLidos){
+    //     a.imprimir();
+    //     tamUtil += a.getBytesUteis();
+    // }
+    // cout << "Tamanho do vetor de alunos lidos: " << alunosLidos.size() << endl;
+    // long long tam = GerenciadorArquivo::obterTamanhoArquivo(arquivoBinario);
+    // cout << "Tamanho Total: " << tam << " Bytes" << "\nTamanho Util: " << tamUtil << " Bytes" << endl;
 
     //Teste do Indicador
 
-    /*string arquivoBinario = "alunos_indicador.bin";
-    string arquivoCSV = "alunos_1k.csv";
-    vector<Aluno> alunos = GerenciadorArquivo::lerCSV(arquivoCSV);
-    GerenciadorArquivo::salvarIndicador(arquivoBinario, alunos);
-    cout << "Salvo" << endl;
-    vector<Aluno> alunosLidos = GerenciadorArquivo::lerIndicador(arquivoBinario);
-    cout << "Tamanho do vetor de alunos lidos: " << alunosLidos.size() << endl;
-    GerenciadorArquivo::salvarIndicador(arquivoBinario, alunos);
-    alunosLidos = GerenciadorArquivo::lerIndicador(arquivoBinario);
-    for(Aluno& a : alunosLidos){
-        a.imprimir();
-    }
-    cout << "Tamanho do vetor de alunos lidos: " << alunosLidos.size() << endl;
-
-
-    long long tam = GerenciadorArquivo::obterTamanhoArquivo(arquivoBinario);
-    cout << tam << " Bytes" << endl;*/
+    // string arquivoBinario = "alunos_indicador.bin";
+    // string arquivoCSV = "alunos_1k.csv";
+    // vector<Aluno> alunos = GerenciadorArquivo::lerCSV(arquivoCSV);
+    // GerenciadorArquivo::salvarIndicador(arquivoBinario, alunos);
+    // vector<Aluno> alunosLidos = GerenciadorArquivo::lerIndicador(arquivoBinario);
+    // int tamUtil = 0;
+    // for(Aluno& a : alunosLidos){
+    //     a.imprimir();
+    //     tamUtil += a.getBytesUteis();
+    // }
+    // cout << "Tamanho do vetor de alunos lidos: " << alunosLidos.size() << endl;
+    // long long tam = GerenciadorArquivo::obterTamanhoArquivo(arquivoBinario);
+    // cout << "Tamanho Total: " << tam << " Bytes" << "\nTamanho Util: " << tamUtil << " Bytes" << endl;
 
     return 0;
 }

@@ -281,9 +281,11 @@ void Aluno::unpackIndicador(const char *buffer)
     std::memcpy(&cra, buffer + pos, sizeof(cra));
     pos += sizeof(cra);
 }
-// int Aluno::getBytesUteis()
-// {
-// =}
+
+int Aluno::getBytesUteis()
+{
+    return sizeof(matricula) + nome.size() + sizeof(idade) + curso.size() + cidade.size() + uf.size() + sizeof(cra);
+}
 
 void Aluno::imprimir()
 {

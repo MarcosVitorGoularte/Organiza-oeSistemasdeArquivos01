@@ -51,7 +51,7 @@ public:
     void unpackIndicador(const char* buffer);
 
     int obterTamanhoRegistroIndicador();
-    // int getBytesUteis();
+    int getBytesUteis();
     void imprimir();
 };
 
