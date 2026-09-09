@@ -7,7 +7,7 @@
 #include <cstring>
 #include <filesystem>
 
-std::vector<Aluno> GerenciadorArquivo::lerCSV(const std::string& caminho){
+std::vector<Aluno> GerenciadorArquivo::lerCSV(std::string caminho){
     std::vector<Aluno> alunos;
 
     std::ifstream arquivo(caminho);
@@ -33,28 +33,21 @@ std::vector<Aluno> GerenciadorArquivo::lerCSV(const std::string& caminho){
         while(std::getline(ss, campoAtual, ',')){
             campos.push_back(campoAtual);
         }
-        try{
-            int matricula = std::stoi(campos[0]);
-            std::string& nome = campos[1];
-            int idade = std::stoi(campos[2]);
-            std::string& curso = campos[3];
-            std::string& cidade = campos[4];
-            std::string& uf = campos[5];
-            float cra = std::stof(campos[6]);
-            alunos.emplace_back(matricula, nome, idade, curso, cidade, uf, cra);
-        }
-        catch(std::exception& e){
-            std::cout << "Dado ignorado na leitura do arquivo CSV: " << caminho << "\n" <<
-            "Motivo: " << e.what() << std::endl;
-        }
+        int matricula = std::stoi(campos[0]);
+        std::string& nome = campos[1];
+        int idade = std::stoi(campos[2]);
+        std::string& curso = campos[3];
+        std::string& cidade = campos[4];
+        std::string& uf = campos[5];
+        float cra = std::stof(campos[6]);
+        alunos.emplace_back(matricula, nome, idade, curso, cidade, uf, cra);
     }
     arquivo.close();
     return alunos;
 
 }
 
-bool GerenciadorArquivo::salvarFixo(const std::string& arq, std::vector<Aluno> al){
-     
+bool GerenciadorArquivo::salvarFixo(std::string arq, std::vector<Aluno> al){
     std::fstream arquivo(arq, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
     if(!arquivo.is_open()){
         std::cout << "Erro ao abrir o arquivo!" << std::endl;
@@ -64,8 +57,8 @@ bool GerenciadorArquivo::salvarFixo(const std::string& arq, std::vector<Aluno> a
     char buffer[Aluno::TAMANHO_REGISTRO];
     for(Aluno& aluno : al){
         std::memset(buffer, 0, Aluno::TAMANHO_REGISTRO);
-        aluno.packFixo(buffer);
-        arquivo.write(reinterpret_cast<char*>(buffer), Aluno::TAMANHO_REGISTRO);
+        int pos = aluno.packFixo(buffer);
+        arquivo.write(reinterpret_cast<char*>(buffer), pos);
     }
     bool sucesso = !arquivo.fail();
     arquivo.close();
@@ -73,7 +66,7 @@ bool GerenciadorArquivo::salvarFixo(const std::string& arq, std::vector<Aluno> a
 
 }
 
-bool GerenciadorArquivo::salvarDelimitado(const std::string& arq, std::vector<Aluno> al){
+bool GerenciadorArquivo::salvarDelimitado(std::string arq, std::vector<Aluno> al){
     std::fstream arquivo(arq, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
     if(!arquivo.is_open()){
         std::cout << "Erro ao abrir o arquivo!" << std::endl;
@@ -88,11 +81,28 @@ bool GerenciadorArquivo::salvarDelimitado(const std::string& arq, std::vector<Al
     return sucesso;
 }
 
-// bool GerenciadorArquivo::salvarIndicador(const std::string& arq, std::vector<Aluno> al){
+bool GerenciadorArquivo::salvarIndicador(std::string arq, std::vector<Aluno> al){
+    std::fstream arquivo(arq, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
+    if(!arquivo.is_open()){
+        std::cout << "Erro ao abrir o arquivo!" << std::endl;
+        return false;
+    }
 
-// }
+    
+    for(Aluno& aluno : al){
+        int tam = aluno.obterTamanhoRegistroIndicador();
+        char* buffer = new char[tam];
+        int pos = aluno.packIndicador(buffer);
+        arquivo.write(reinterpret_cast<char*>(buffer), pos);
+        delete[] buffer;
+    }
+    
+    bool sucesso = !arquivo.fail();
+    arquivo.close();
+    return sucesso;
+}
 
-std::vector<Aluno> GerenciadorArquivo::lerFixo(const std::string& arq){
+std::vector<Aluno> GerenciadorArquivo::lerFixo(std::string arq){
     
     std::vector<Aluno> alunos;
     std::ifstream arquivo(arq , std::ios::binary);
@@ -113,7 +123,7 @@ std::vector<Aluno> GerenciadorArquivo::lerFixo(const std::string& arq){
 
 
 }
-std::vector<Aluno> GerenciadorArquivo::lerDelimitado(const std::string& arq){
+std::vector<Aluno> GerenciadorArquivo::lerDelimitado(std::string arq){
     std::vector<Aluno> alunos;
     std::ifstream arquivo(arq, std::ios::binary);
     if(!arquivo.is_open()){
@@ -129,10 +139,30 @@ std::vector<Aluno> GerenciadorArquivo::lerDelimitado(const std::string& arq){
     arquivo.close();
     return alunos;
 }
-// std::vector<Aluno> GerenciadorArquivo::lerIndicador(const std::string& arq){
 
-// }
-bool GerenciadorArquivo::lerPorRRN(const std::string& arq, int rrn, Aluno& out){
+std::vector<Aluno> GerenciadorArquivo::lerIndicador(std::string arq){
+    std::vector<Aluno> alunos;
+    std::ifstream arquivo(arq , std::ios::binary);
+    
+    if(!arquivo.is_open()){
+        std::cout << "Erro ao abrir o arquivo: " << arq << std::endl;
+        return alunos;
+    }
+
+    unsigned short tamRegistro;
+    while(arquivo.read(reinterpret_cast<char*>(&tamRegistro), sizeof(tamRegistro))){
+        char* buffer = new char[tamRegistro];
+        arquivo.read(buffer, tamRegistro);
+        Aluno aluno;
+        aluno.unpackIndicador(buffer);
+        alunos.push_back(aluno);
+        delete[] buffer;
+    }
+    arquivo.close();
+    return alunos;
+}
+
+bool GerenciadorArquivo::lerPorRRN(std::string arq, int rrn, Aluno& out){
     if(rrn < 0){
         std::cout << "RRN nao pode ser negativo!" << std::endl;
         return false;
@@ -167,7 +197,7 @@ bool GerenciadorArquivo::lerPorRRN(const std::string& arq, int rrn, Aluno& out){
     return true;
 
 }
-long long GerenciadorArquivo::obterTamanhoArquivo(const std::string& arq){
+long long GerenciadorArquivo::obterTamanhoArquivo(std::string arq){
     
     std::filesystem::path caminho(arq);
     long long tamanho = 0;

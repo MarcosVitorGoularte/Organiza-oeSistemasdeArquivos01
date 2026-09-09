@@ -64,63 +64,30 @@ float Aluno::getCra() const
 
 
 void Aluno::setMatricula(int matricula){
-    if(matricula < 0){
-        throw std::invalid_argument("Matricula nao pode ser negativa");
-    }
     this->matricula = matricula;
 }
 
 void Aluno::setNome(const std::string& nome){
-    if(nome.empty()){
-        throw std::invalid_argument("Nome nulo.");
-    }
-    if(nome.size() > TAMANHO_NOME){
-        throw std::invalid_argument("Nome maior que 40 bytes.");
-    }
     this->nome = nome;
 }
 
 void Aluno::setIdade(int idade){
-    if(idade < 0 || idade > 130){
-        throw std::invalid_argument("Idade nao pode ser negativa ou maior que 130 anos");
-    }
     this->idade = idade;
 }
 
 void Aluno::setCurso(const std::string& curso){
-    if(curso.empty()){
-        throw std::invalid_argument("Curso nulo.");
-    }
-    if(curso.size() > TAMANHO_CURSO){
-        throw std::invalid_argument("Curso maior que 35 bytes.");
-    }
     this->curso = curso;
 }
 
 void Aluno::setCidade(const std::string& cidade){
-    if(cidade.empty()){
-        throw std::invalid_argument("Cidade nula.");
-    }
-    if(cidade.size() > TAMANHO_CIDADE){
-        throw std::invalid_argument("Cidade maior que 30 bytes.");
-    }
     this->cidade = cidade;
 }
 
 void Aluno::setUF(const std::string& uf){
-    if(uf.empty()){
-        throw std::invalid_argument("UF nulo.");
-    }
-    if(uf.size() > TAMANHO_UF){
-        throw std::invalid_argument("UF maior que 3 bytes.");
-    }
     this->uf = uf;
 }
 
 void Aluno::setCra(float cra){
-    if(cra < 0.0 || cra > 10.0){
-        throw std::invalid_argument("CRA invalido!(0-10)");
-    }
     this->cra = cra;
 }
 
@@ -131,22 +98,22 @@ int Aluno::packFixo(char *buffer)
     pos+=sizeof(matricula);
 
     std::memset(buffer + pos, 0, TAMANHO_NOME);
-    std::memcpy(buffer + pos, nome.data(), nome.size());
+    std::memcpy(buffer + pos, nome.data(), std::min(nome.size(), static_cast<size_t>(TAMANHO_NOME-1)));
     pos+=TAMANHO_NOME;
 
     std::memcpy(buffer + pos, &idade, sizeof(idade));
     pos+=sizeof(idade);
 
     std::memset(buffer + pos, 0, TAMANHO_CURSO);
-    std::memcpy(buffer + pos, curso.data(), curso.size());
+    std::memcpy(buffer + pos, curso.data(), std::min(curso.size(), static_cast<size_t>(TAMANHO_CURSO-1)));
     pos+=TAMANHO_CURSO;
 
     std::memset(buffer + pos, 0, TAMANHO_CIDADE);
-    std::memcpy(buffer + pos, cidade.data(), cidade.size());
+    std::memcpy(buffer + pos, cidade.data(), std::min(cidade.size(), static_cast<size_t>(TAMANHO_CIDADE-1)));
     pos+=TAMANHO_CIDADE;
 
     std::memset(buffer + pos, 0, TAMANHO_UF);
-    std::memcpy(buffer + pos, uf.data(), uf.size());
+    std::memcpy(buffer + pos, uf.data(), std::min(uf.size(), static_cast<size_t>(TAMANHO_UF-1)));
     pos+=TAMANHO_UF;
 
     std::memcpy(buffer + pos, &cra, sizeof(cra));
@@ -164,9 +131,65 @@ std::string Aluno::packDelimitado()
     return buffer;
 }
 
-// int Aluno::packIndicador(char *buffer)
-// {
-// }
+int Aluno::obterTamanhoRegistroIndicador(){
+    unsigned char tamNome = nome.size();
+    unsigned char tamCurso = curso.size();
+    unsigned char tamCidade = cidade.size();
+    unsigned char tamUF = uf.size();
+
+    unsigned short tam = sizeof(matricula) + sizeof(tamNome) + tamNome + sizeof(idade) + sizeof(tamCurso) + tamCurso + + sizeof(tamCidade) + tamCidade + tamUF + sizeof(tamUF) + sizeof(cra);
+
+    return tam + sizeof(tam);
+}
+
+int Aluno::packIndicador(char *buffer)
+{
+    unsigned char tamNome = nome.size();
+    unsigned char tamCurso = curso.size();
+    unsigned char tamCidade = cidade.size();
+    unsigned char tamUF = uf.size();
+
+    unsigned short tam = sizeof(matricula) + sizeof(tamNome) + tamNome + sizeof(idade) + sizeof(tamCurso) + tamCurso + + sizeof(tamCidade) + tamCidade + tamUF + sizeof(tamUF) + sizeof(cra);
+    int pos = 0;
+
+    std::memcpy(buffer + pos, &tam, sizeof(tam));
+    pos += sizeof(tam);
+
+    std::memcpy(buffer + pos, &matricula, sizeof(matricula));
+    pos+=sizeof(matricula);
+
+    std::memcpy(buffer + pos, &tamNome, sizeof(tamNome));
+    pos+=sizeof(tamNome);
+
+    std::memcpy(buffer + pos, nome.data(), nome.size());
+    pos+=tamNome;
+
+    std::memcpy(buffer + pos, &idade, sizeof(idade));
+    pos+=sizeof(idade);
+
+    std::memcpy(buffer + pos, &tamCurso, sizeof(tamCurso));
+    pos+=sizeof(tamCurso);
+
+    std::memcpy(buffer + pos, curso.data(), curso.size());
+    pos+=tamCurso;
+    
+    std::memcpy(buffer + pos, &tamCidade, sizeof(tamCidade));
+    pos+=sizeof(tamCidade);
+
+    std::memcpy(buffer + pos, cidade.data(), cidade.size());
+    pos+=tamCidade;
+    
+    std::memcpy(buffer + pos, &tamUF, sizeof(tamUF));
+    pos+=sizeof(tamUF);
+
+    std::memcpy(buffer + pos, uf.data(), uf.size());
+    pos+=tamUF;
+
+    std::memcpy(buffer + pos, &cra, sizeof(cra));
+    pos+=sizeof(cra);
+
+    return pos;
+}
 
 void Aluno::unpackFixo(const char *buffer)
 {
@@ -217,12 +240,50 @@ void Aluno::unpackDelimitado(const std::string &buffer)
         cra = std::stof(campo);
     }
 }
-// void Aluno::unpackIndicador(const char *buffer)
-// {
-// }
+
+void Aluno::unpackIndicador(const char *buffer)
+{
+    int pos = 0;
+    std::memcpy(&matricula, buffer + pos, sizeof(matricula));
+    pos += sizeof(matricula);
+
+    unsigned char tamNome;
+    std::memcpy(&tamNome, buffer+pos, sizeof(tamNome));
+    pos+=sizeof(tamNome);
+
+    nome = std::string(buffer + pos, tamNome);
+    pos += tamNome;
+    
+    std::memcpy(&idade, buffer + pos, sizeof(idade));
+    pos += sizeof(idade);
+
+    unsigned char tamCurso;
+    std::memcpy(&tamCurso, buffer+pos, sizeof(tamCurso));
+    pos+=sizeof(tamCurso);
+
+    curso = std::string(buffer + pos, tamCurso);
+    pos += tamCurso;
+
+    unsigned char tamCidade;
+    std::memcpy(&tamCidade, buffer+pos, sizeof(tamCidade));
+    pos+=sizeof(tamCidade);
+    
+    cidade = std::string(buffer + pos, tamCidade);
+    pos += tamCidade;
+
+    unsigned char tamUF;
+    std::memcpy(&tamUF, buffer+pos, sizeof(tamUF));
+    pos+=sizeof(tamUF);
+
+    uf = std::string(buffer + pos, tamUF);
+    pos += tamUF;
+
+    std::memcpy(&cra, buffer + pos, sizeof(cra));
+    pos += sizeof(cra);
+}
 // int Aluno::getBytesUteis()
 // {
-// }
+// =}
 
 void Aluno::imprimir()
 {

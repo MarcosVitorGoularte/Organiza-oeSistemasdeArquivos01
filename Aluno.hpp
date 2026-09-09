@@ -45,10 +45,12 @@ public:
 
     int packFixo(char* buffer);
     std::string packDelimitado();
-    // int packIndicador(char* buffer);
+    int packIndicador(char* buffer);
     void unpackFixo(const char* buffer);
     void unpackDelimitado(const std::string& buffer);
-    // void unpackIndicador(const char* buffer);
+    void unpackIndicador(const char* buffer);
+
+    int obterTamanhoRegistroIndicador();
     // int getBytesUteis();
     void imprimir();
 };
